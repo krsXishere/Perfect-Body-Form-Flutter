@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:perfect_body_form/common/constant.dart';
+import 'package:perfect_body_form/providers/detail_achievement_provider.dart';
 import 'package:perfect_body_form/providers/exercise_provider.dart';
 
 class ExerciseCardWidget extends StatefulWidget {
   const ExerciseCardWidget({
     super.key,
     required this.exerciseProvider,
+    required this.detailAchievementProvider,
   });
 
   final ExerciseProvider exerciseProvider;
+  final DetailAchievementProvider detailAchievementProvider;
 
   @override
   State<ExerciseCardWidget> createState() => _ExerciseCardWidgetState();
 }
 
 class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
+  navigatePop() {
+    Navigator.of(context).pop();
+  }
+
   showModal(
     ExerciseProvider exerciseProvider,
     int index,
+    bool isButtonActive,
+    String exerciseId,
   ) {
+    // print("$isButtonActive");
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -45,6 +55,36 @@ class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
                     borderRadius: BorderRadius.circular(defaultBorderRadius),
                   ),
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: isButtonActive
+                        ? () async {
+                            if (await widget.detailAchievementProvider
+                                .createAchievement(exerciseId)) {
+                              widget.detailAchievementProvider.getAchievement();
+                              widget.detailAchievementProvider.getDetailAchievements();
+                              navigatePop();
+                            }
+                          }
+                        : null,
+                    child: Row(
+                      children: [
+                        Text(
+                          isButtonActive ? "Selesaikan" : "Selesai",
+                          style: primaryTextStyle.copyWith(
+                              color: isButtonActive ? primaryColor : grey400),
+                        ),
+                        Icon(
+                          Icons.check,
+                          color: isButtonActive ? primaryColor : grey400,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               Text(
                 widget.exerciseProvider.exercises[index].exerciseName
@@ -105,11 +145,19 @@ class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
       ),
       itemCount: widget.exerciseProvider.exercises.length,
       itemBuilder: (context, index) {
+        final exercise = widget.exerciseProvider.exercises[index];
+        bool isButtonActive = widget
+            .detailAchievementProvider.detailAchievementModels
+            .any((achievement) =>
+                achievement.exerciseId == exercise.id && achievement.status!);
+
         return GestureDetector(
           onTap: () {
             showModal(
               widget.exerciseProvider,
               index,
+              !isButtonActive,
+              exercise.id.toString(),
             );
           },
           child: Container(
@@ -118,6 +166,9 @@ class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
             decoration: BoxDecoration(
               color: white,
               borderRadius: BorderRadius.circular(defaultBorderRadius),
+              border: Border.all(
+                color: !isButtonActive ? primaryColor : Colors.transparent,
+              ),
               boxShadow: [
                 primaryShadow,
               ],
@@ -125,12 +176,15 @@ class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.exerciseProvider.exercises[index].exerciseName
-                      .toString(),
-                  style: secondaryTextStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: bold,
+                Flexible(
+                  child: Text(
+                    widget.exerciseProvider.exercises[index].exerciseName
+                        .toString(),
+                    style: secondaryTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Row(
@@ -142,11 +196,14 @@ class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
                         fontSize: 14,
                       ),
                     ),
-                    Text(
-                      widget.exerciseProvider.exercises[index].time
-                          .toString(),
-                      style: secondaryTextStyle.copyWith(
-                        fontSize: 14,
+                    Flexible(
+                      child: Text(
+                        widget.exerciseProvider.exercises[index].time
+                            .toString(),
+                        style: secondaryTextStyle.copyWith(
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:perfect_body_form/common/constant.dart';
+import 'package:perfect_body_form/providers/detail_achievement_provider.dart';
 import 'package:perfect_body_form/providers/exercise_provider.dart';
 import 'package:perfect_body_form/providers/home_provider.dart';
 import 'package:perfect_body_form/providers/user_provider.dart';
+import 'package:perfect_body_form/widgets/achievement_progress_bar_widget.dart';
 import 'package:perfect_body_form/widgets/bmi_calculator_widget.dart';
 import 'package:perfect_body_form/widgets/empty_widget.dart';
 import 'package:perfect_body_form/widgets/exercise_card_widget.dart';
@@ -25,6 +27,14 @@ class _ExercisePageState extends State<ExercisePage> {
       context,
       listen: false,
     ).getExercises();
+    Provider.of<DetailAchievementProvider>(
+      context,
+      listen: false,
+    ).getAchievement();
+    Provider.of<DetailAchievementProvider>(
+      context,
+      listen: false,
+    ).getDetailAchievements();
   }
 
   @override
@@ -33,8 +43,10 @@ class _ExercisePageState extends State<ExercisePage> {
       getData();
     });
 
-    return Consumer3<ExerciseProvider, UserProvider, HomeProvider>(
-      builder: (context, exerciseProvider, userProvider, homeProvider, child) {
+    return Consumer4<ExerciseProvider, UserProvider, HomeProvider,
+        DetailAchievementProvider>(
+      builder: (context, exerciseProvider, userProvider, homeProvider,
+          detailAchievementProvider, child) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: primaryColor,
@@ -59,6 +71,7 @@ class _ExercisePageState extends State<ExercisePage> {
                         ),
                         ExerciseCardWidget(
                           exerciseProvider: exerciseProvider,
+                          detailAchievementProvider: detailAchievementProvider,
                         ),
                       ],
                     )
@@ -83,6 +96,9 @@ class _ExercisePageState extends State<ExercisePage> {
                           title:
                               "Latihan untuk masa tubuh kamu belum tersedia saat ini"),
             ),
+          ),
+          bottomSheet: AchievementProgressBarWidget(
+            value: detailAchievementProvider.achievement ?? 0,
           ),
         );
       },

@@ -6,6 +6,7 @@ import 'package:perfect_body_form/common/constant.dart';
 import 'package:perfect_body_form/pages/sign_in_page.dart';
 import 'package:perfect_body_form/providers/auth_provider.dart';
 import 'package:perfect_body_form/providers/bottom_navigation_bar_provider.dart';
+import 'package:perfect_body_form/providers/detail_achievement_provider.dart';
 import 'package:perfect_body_form/providers/exercise_provider.dart';
 import 'package:perfect_body_form/providers/home_provider.dart';
 import 'package:perfect_body_form/providers/user_provider.dart';
@@ -61,6 +62,9 @@ class _PerfectBodyFormState extends State<PerfectBodyForm> {
         ),
         ChangeNotifierProvider(
           create: (context) => ExerciseProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DetailAchievementProvider(),
         ),
       ],
       child: Builder(builder: (context) {

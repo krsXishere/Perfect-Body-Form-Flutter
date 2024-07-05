@@ -9,12 +9,13 @@ String baseAPIURL() {
   return "${baseURL()}/api";
 }
 
-String baseURL() {
-  return "http://192.168.1.3:8080";
-}
 // String baseURL() {
 //   return "https://perfect-body-form.byraq-tech.com";
 // }
+
+String baseURL() {
+  return "http://192.168.1.5:8080";
+}
 
 String baseImageURL() {
   return "${baseURL()}/storage";
@@ -90,12 +91,17 @@ Color grey700 = const Color(0xFF111114);
 Color grey600 = const Color(0xFF2b2b30);
 Color grey500 = const Color(0xFF4b4b53);
 Color grey400 = const Color(0xFF6d6d75);
+Color grey300 = Colors.grey[300]!;
 Color black = const Color(0xFF000000);
 Color white = const Color(0xFFFFFFFF);
 
 BoxShadow primaryShadow = BoxShadow(
   blurRadius: 5,
   color: grey400.withOpacity(0.3),
+);
+BoxShadow secondaryShadow = BoxShadow(
+  blurRadius: 1,
+  color: primaryColor,
 );
 
 FontWeight light = FontWeight.w300;
